@@ -110,7 +110,7 @@ namespace osu_rpc
                                     rpcClient.SetPresence(new RichPresence()
                                     {
                                         Details = $"Listening to {gosumemoryObjects["menu"]["bm"]["metadata"].artist} - {gosumemoryObjects["menu"]["bm"]["metadata"].title}",
-                                        State = "Idling in main menu",
+                                        State = "Idling in the main menu",
                                         Assets = new Assets()
                                         {
                                             LargeImageKey = "osu-logo",
