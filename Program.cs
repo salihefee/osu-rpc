@@ -1,8 +1,6 @@
 ﻿using DiscordRPC;
-using DiscordRPC.Message;
 using Newtonsoft.Json;
 using System.Diagnostics;
-using System.IO;
 using System.Text;
 
 namespace osu_rpc
