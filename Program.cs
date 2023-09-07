@@ -206,7 +206,7 @@ namespace osu_rpc
                                 {
                                     rpcClient.SetPresence(new RichPresence()
                                     {
-                                        Details = $"{gosumemoryObjects["menu"]["bm"]["metadata"].artist} - {gosumemoryObjects["menu"]["bm"]["metadata"].title} [{gosumemoryObjects["menu"]["bm"]["metadata"].difficulty}]",
+                                        Details = $"{gosumemoryObjects["menu"]["bm"]["metadata"].artist} - {gosumemoryObjects["menu"]["bm"]["metadata"].title} [{gosumemoryObjects["menu"]["bm"]["metadata"].difficulty}]{(Convert.ToString(gosumemoryObjects["menu"]["mods"].str) != "NM" ? " + " + Convert.ToString(gosumemoryObjects["menu"]["mods"].str) : "")}",
                                         State = "Paused",
                                         Assets = new Assets()
                                         {
