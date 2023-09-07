@@ -13,13 +13,15 @@ namespace osu_rpc
 
         public static dynamic? configData;
 
+        public static dynamic? gosumemoryObjects;
+
         public static int? lastState = null;
 
         public static int? lastTime = null;
 
         public static long? start = null;
 
-        public static Process? gosumemoryProcess;
+        public static Process? gosumemory;
 
 
         public static bool IsPaused(dynamic response)
@@ -46,7 +48,7 @@ namespace osu_rpc
 
         public static void OnProcessExit(object sender, EventArgs e)
         {
-            gosumemoryProcess!.Kill();
+            Process.GetProcessesByName("gosumemory")[0].Kill();
         }
 
         static async Task Main(string[] args)
@@ -70,22 +72,17 @@ namespace osu_rpc
                         Console.WriteLine($"Received Ready from user {e.User.Username}");
                     };
 
-                    Thread keyboardInterrupt = new Thread(() =>
-                    {
-                        Console.WriteLine("Press any key to exit.");
-                        Console.ReadKey();
-                        Environment.Exit(0);
-                    });
-
-                    keyboardInterrupt.Start();
-
                     rpcClient.Initialize();
 
                     if (Process.GetProcessesByName("gosumemory").Length == 0)
                     {
                         try
                         {
-                            gosumemoryProcess = Process.Start(Convert.ToString(configData!.gosumemory_path));
+                            gosumemory = new Process();
+                            gosumemory.StartInfo.FileName = Convert.ToString(configData!.gosumemory_path);
+                            gosumemory.StartInfo.CreateNoWindow = true;
+
+                            gosumemory.Start();
 
                             AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit!);
                         }
@@ -100,9 +97,26 @@ namespace osu_rpc
 
                     while (true)
                     {
-                        dynamic gosumemoryObjects = JsonConvert.DeserializeObject(await httpClient.GetStringAsync("http://127.0.0.1:24050/json"))!;
+                        var gosumemoryResponse = await httpClient.GetStringAsync("http://127.0.0.1:24050/json");
 
-                        switch (Convert.ToInt32(gosumemoryObjects["menu"].state))
+                        gosumemoryObjects = JsonConvert.DeserializeObject(gosumemoryResponse);
+
+                        if (gosumemoryObjects!.error == "osu! is not fully loaded!")
+                        {
+                            rpcClient.Dispose();
+                            continue;
+                        }
+
+                        else
+                        {
+                            if (rpcClient.IsDisposed)
+                            {
+                                rpcClient = new DiscordRpcClient("1148786959167271044");
+                                rpcClient.Initialize();
+                            }
+                            
+                        }
+                        switch (Convert.ToInt32(gosumemoryObjects!["menu"].state))
                         {
                             case 0:
                                 if (!IsPaused(gosumemoryObjects))
