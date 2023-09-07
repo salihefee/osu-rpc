@@ -86,7 +86,7 @@ namespace osu_rpc
                         try
                         {
                             gosumemory = new Process();
-                            gosumemory.StartInfo.FileName = Convert.ToString("asdasd");
+                            gosumemory.StartInfo.FileName = Convert.ToString(configData!.gosumemory_path);
                             gosumemory.StartInfo.CreateNoWindow = true;
 
                             gosumemory.Start();
