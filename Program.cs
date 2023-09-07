@@ -113,7 +113,7 @@ namespace osu_rpc
 
                         if (gosumemoryObjects!.error == "osu! is not fully loaded!")
                         {
-                            rpcClient.Dispose();
+                            if (!rpcClient.IsDisposed) rpcClient.Dispose();
                             continue;
                         }
 
