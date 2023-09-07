@@ -114,7 +114,6 @@ namespace osu_rpc
                                 rpcClient = new DiscordRpcClient("1148786959167271044");
                                 rpcClient.Initialize();
                             }
-                            
                         }
                         switch (Convert.ToInt32(gosumemoryObjects!["menu"].state))
                         {
