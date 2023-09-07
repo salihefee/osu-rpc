@@ -25,6 +25,10 @@ namespace osu_rpc
 
         public static string? gosumemoryResponse;
 
+        public static dynamic? users;
+
+        public static string? userInfoString;
+
 
         public static bool IsPaused(dynamic response)
         {
@@ -42,7 +46,8 @@ namespace osu_rpc
         public static async Task<string> GetUserInfo()
         {
             var userRequest = await httpClient.GetAsync($"https://osu.ppy.sh/api/get_user?k={configData!.osu_token}&u={configData!.osu_id}&type=u");
-            dynamic users = JsonConvert.DeserializeObject(await userRequest.Content.ReadAsStringAsync())!;
+            users = JsonConvert.DeserializeObject(await userRequest.Content.ReadAsStringAsync())!;
+
             var user = users[0];
 
             return $"{user.username} (rank #{Convert.ToInt32(user.pp_rank):n0})";
@@ -81,33 +86,48 @@ namespace osu_rpc
                         try
                         {
                             gosumemory = new Process();
-                            gosumemory.StartInfo.FileName = Convert.ToString(configData!.gosumemory_path);
+                            gosumemory.StartInfo.FileName = Convert.ToString("asdasd");
                             gosumemory.StartInfo.CreateNoWindow = true;
 
                             gosumemory.Start();
-
-                            AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit!);
                         }
                         catch (Exception)
-                        {
-                            Console.WriteLine("Edit your config.json file before launching the executable.");
+                        {   
+                            using StreamWriter errorLog = new StreamWriter(Path.Combine(AppContext.BaseDirectory, "errorLog.txt"));
+                            errorLog.Write("Edit your config.json file before launching the executable.");
+
                             Environment.Exit(0);
                         }
-                        
+
                         Thread.Sleep(5000);
                     }
+
+                    AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit!);
 
                     while (true)
                     {
                         try
                         {
-                            gosumemoryResponse = await httpClient.GetStringAsync("http://127.0.0.1:24050/json");
+                            userInfoString = await GetUserInfo();
                         }
-                        catch (Exception)
+                        catch (Exception e)
                         {
+                            using StreamWriter errorLog = new StreamWriter(Path.Combine(AppContext.BaseDirectory, "errorLog.txt"));
+                            errorLog.Write(e.ToString());
                             continue;
                         }
-                        
+
+                        try
+                        {
+                            gosumemoryResponse = await httpClient.GetStringAsync("http://127.0.0.1:24050/json");
+                        }
+                        catch (Exception e)
+                        {
+                            using StreamWriter errorLog = new StreamWriter(Path.Combine(AppContext.BaseDirectory, "errorLog.txt"));
+                            errorLog.Write(e.ToString());
+                            continue;
+                        }
+
 
                         gosumemoryObjects = JsonConvert.DeserializeObject(gosumemoryResponse);
 
@@ -137,7 +157,7 @@ namespace osu_rpc
                                         Assets = new Assets()
                                         {
                                             LargeImageKey = "osu-logo",
-                                            LargeImageText = await GetUserInfo(),
+                                            LargeImageText = userInfoString,
                                             SmallImageKey = gameModes[gosumemoryObjects["menu"].gameMode, 1],
                                             SmallImageText = gameModes[gosumemoryObjects["menu"].gameMode, 0],
                                         }
@@ -156,7 +176,7 @@ namespace osu_rpc
                                         Assets = new Assets()
                                         {
                                             LargeImageKey = "osu-logo",
-                                            LargeImageText = await GetUserInfo(),
+                                            LargeImageText = userInfoString,
                                             SmallImageKey = gameModes[gosumemoryObjects["menu"].gameMode, 1],
                                             SmallImageText = gameModes[gosumemoryObjects["menu"].gameMode, 0],
                                         }
@@ -175,7 +195,7 @@ namespace osu_rpc
                                     Assets = new Assets()
                                     {
                                         LargeImageKey = "osu-logo",
-                                        LargeImageText = await GetUserInfo(),
+                                        LargeImageText = userInfoString,
                                         SmallImageKey = gameModes[gosumemoryObjects["menu"].gameMode, 1],
                                         SmallImageText = gameModes[gosumemoryObjects["menu"].gameMode, 0],
                                     }
@@ -202,7 +222,7 @@ namespace osu_rpc
                                         Assets = new Assets()
                                         {
                                             LargeImageKey = $"https://assets.ppy.sh/beatmaps/{gosumemoryObjects["menu"]["bm"].set}/covers/list@2x.jpg",
-                                            LargeImageText = await GetUserInfo(),
+                                            LargeImageText = userInfoString,
                                             SmallImageKey = gameModes[gosumemoryObjects["menu"].gameMode, 1],
                                             SmallImageText = gameModes[gosumemoryObjects["menu"].gameMode, 0],
                                         }
@@ -221,7 +241,7 @@ namespace osu_rpc
                                         Assets = new Assets()
                                         {
                                             LargeImageKey = $"https://assets.ppy.sh/beatmaps/{gosumemoryObjects["menu"]["bm"].set}/covers/list@2x.jpg",
-                                            LargeImageText = await GetUserInfo(),
+                                            LargeImageText = userInfoString,
                                             SmallImageKey = "https://i.imgur.com/UHbb178.png",
                                             SmallImageText = gameModes[gosumemoryObjects["menu"].gameMode, 0],
                                         }
@@ -239,7 +259,7 @@ namespace osu_rpc
                                     Assets = new Assets()
                                     {
                                         LargeImageKey = "osu-logo",
-                                        LargeImageText = await GetUserInfo(),
+                                        LargeImageText = userInfoString,
                                         SmallImageKey = gameModes[gosumemoryObjects["menu"].gameMode, 1],
                                         SmallImageText = gameModes[gosumemoryObjects["menu"].gameMode, 0],
                                     }
@@ -256,7 +276,7 @@ namespace osu_rpc
                                     Assets = new Assets()
                                     {
                                         LargeImageKey = "osu-logo",
-                                        LargeImageText = await GetUserInfo(),
+                                        LargeImageText = userInfoString,
                                         SmallImageKey = gameModes[gosumemoryObjects["menu"].gameMode, 1],
                                         SmallImageText = gameModes[gosumemoryObjects["menu"].gameMode, 0],
                                     }
@@ -273,7 +293,7 @@ namespace osu_rpc
                                     Assets = new Assets()
                                     {
                                         LargeImageKey = "osu-logo",
-                                        LargeImageText = await GetUserInfo(),
+                                        LargeImageText = userInfoString,
                                         SmallImageKey = gameModes[gosumemoryObjects["menu"].gameMode, 1],
                                         SmallImageText = gameModes[gosumemoryObjects["menu"].gameMode, 0],
                                     }
@@ -290,7 +310,7 @@ namespace osu_rpc
                                     Assets = new Assets()
                                     {
                                         LargeImageKey = "osu-logo",
-                                        LargeImageText = await GetUserInfo(),
+                                        LargeImageText = userInfoString,
                                         SmallImageKey = gameModes[gosumemoryObjects["menu"].gameMode, 1],
                                         SmallImageText = gameModes[gosumemoryObjects["menu"].gameMode, 0],
                                     }
@@ -307,7 +327,7 @@ namespace osu_rpc
                                     Assets = new Assets()
                                     {
                                         LargeImageKey = $"https://assets.ppy.sh/beatmaps/{gosumemoryObjects["menu"]["bm"].set}/covers/list@2x.jpg",
-                                        LargeImageText = await GetUserInfo(),
+                                        LargeImageText = userInfoString,
                                         SmallImageKey = gameModes[gosumemoryObjects["menu"].gameMode, 1],
                                         SmallImageText = gameModes[gosumemoryObjects["menu"].gameMode, 0],
                                     }
@@ -324,7 +344,7 @@ namespace osu_rpc
                                     Assets = new Assets()
                                     {
                                         LargeImageKey = "osu-logo",
-                                        LargeImageText = await GetUserInfo(),
+                                        LargeImageText = userInfoString,
                                         SmallImageKey = gameModes[gosumemoryObjects["menu"].gameMode, 1],
                                         SmallImageText = gameModes[gosumemoryObjects["menu"].gameMode, 0],
                                     }
