@@ -23,6 +23,8 @@ namespace osu_rpc
 
         public static Process? gosumemory;
 
+        public static string? gosumemoryResponse;
+
 
         public static bool IsPaused(dynamic response)
         {
@@ -97,7 +99,15 @@ namespace osu_rpc
 
                     while (true)
                     {
-                        var gosumemoryResponse = await httpClient.GetStringAsync("http://127.0.0.1:24050/json");
+                        try
+                        {
+                            gosumemoryResponse = await httpClient.GetStringAsync("http://127.0.0.1:24050/json");
+                        }
+                        catch (Exception)
+                        {
+                            continue;
+                        }
+                        
 
                         gosumemoryObjects = JsonConvert.DeserializeObject(gosumemoryResponse);
 
