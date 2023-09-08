@@ -242,7 +242,7 @@ namespace osu_rpc
                                         {
                                             LargeImageKey = $"https://assets.ppy.sh/beatmaps/{gosumemoryObjects["menu"]["bm"].set}/covers/list@2x.jpg",
                                             LargeImageText = userInfoString,
-                                            SmallImageKey = "https://i.imgur.com/UHbb178.png",
+                                            SmallImageKey = "https://i.imgur.com/281tPC5.png",
                                             SmallImageText = gameModes[gosumemoryObjects["menu"].gameMode, 0],
                                         }
                                     });
