@@ -64,7 +64,7 @@ namespace osu_rpc
                 Thread.Sleep(1000);
                 await using var writer = new StreamWriter(jsonPath);
                 await writer.WriteAsync(
-                    "{\r\n  \"osu_token\": \"YOUR API KEY HERE\",\r\n  \"osu_id\": \"YOUR PROFILE ID HERE\",\r\n  \"gosumemory_path\": \"PATH OF GOSUMEMORY\"\r\n}");
+                    "{\r\n  \"osu_token\": \"YOUR API KEY HERE\",\r\n  \"osu_id\": \"YOUR PROFILE ID HERE\",\r\n  \"gosumemory_path\": \"PATH OF GOSUMEMORY EXECUTABLE\"\r\n}");
             }
             else
             {
