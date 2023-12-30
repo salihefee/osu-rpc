@@ -2,5 +2,4 @@
 # Requirements
 gosumemory: https://github.com/l3lackShark/gosumemory
 # Instructions
-Firstly, disable the original rich presence from osu! settings. Then download the latest relese from the releases tab, and run the executable. It will create a config.json. Fill in the required info and then relaunch the program.
-You're all set :)
+First, go into the osu! settings and disable the original rich presence. Next, launch the executable after downloading the most recent release from the releases tab. There will be a config.json created. After entering the necessary data, restart the application. You're all set :)
